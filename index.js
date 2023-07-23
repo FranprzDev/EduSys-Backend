@@ -3,10 +3,16 @@
 const express = require('express')
 const mongoose = require('mongoose')
 require('dotenv').config()
+const cors = require("cors")
 
 // Inicializaciones
 const app = express()
+app.use(cors())
 const port = 8000
+
+// Indico a mi aplicacion que podria recibir un json del usuario
+app.use(express.json({ limit: "50mb" }))
+
 
 // Conexión a la DB (Uso de dotenv para proteger datos SENSIBLES)
 
