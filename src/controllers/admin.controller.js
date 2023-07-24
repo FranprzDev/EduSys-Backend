@@ -36,20 +36,19 @@ const deleteAdmin = async (req, res) => {
   await adminGenerado.deleteOne(filters);
 
   res.status(204);
-  res.json({
-    message: `El Administrador ${adminGenerado.nombre} ${adminGenerado.apellido} fue eliminado de la DB.`,
-  });
+  res.json({ message: "Se elimino el administrador de la DB." });
 };
 
 const findAllAdmin = async (req, res) => {
   const adminGenerado = await Admin.find();
-  if (adminGenerado != null) {
-    res.status(200);
-    res.json(adminGenerado);
-  } else {
+  if (adminGenerado.length == 0) {
     res.status(404);
     res.json({ message: "No se pudo encontrar la tabla de Administradores." });
   }
+
+  res.status(200);
+  res.json({ adminGenerado });
+  // si aquí no hay nada en la DB tira un error.
 };
 
 const findAdminById = async (req, res) => {

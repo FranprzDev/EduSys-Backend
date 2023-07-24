@@ -22,7 +22,7 @@ const adminSchema = mongoose.Schema({
         required: true,
         trim: true,
         unique: false,
-        minLength: 10,
+        minLength: 6,
         maxLength: 70
     },
     dni: {
