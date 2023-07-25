@@ -17,6 +17,13 @@ const adminSchema = mongoose.Schema({
         minLength: 3,
         maxLength: 25
     },
+    contrasenia: {
+        type: String,
+        required: true,
+        trim: true,
+        unique: false,
+        minLength: 8,
+    },
     direccion: {
         type: String,
         required: true,
@@ -37,7 +44,7 @@ const adminSchema = mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        unique: true,
+        unique: false,
         minLength: 7,
         maxLength: 8
     },

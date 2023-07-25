@@ -10,24 +10,30 @@ const {
 } = require("../controllers/admin.controller")
 const { body, param } = require("express-validator");
 const { expressValidations } = require("../middlewares/common.validations");
+const { emailValidation, dniValidation } = require("../middlewares/admin.validations");
+// const { verifyToken } = require("../controllers/adminAuth.controllers");
+const { verifyJWT } = require("../middlewares/adminAuth.validations");
 
 const adminRouter = Router();
-// Operaciones para el CRUD de ADministradores (Only - Super Administrador)
+
+/* Todas las rutas deben estar verificadas con JWT por que SÓLAMENTE el superAdmin debe acceder al CRUD de Administradores */
 
 /* --> Creación <-- */
 
-// Operación de Creación
 adminRouter.post("/create",
   [
-    body("nombre").notEmpty().isString().isLength({ min: 3, max: 25} ).withMessage("Debe enviar un nombre."),
-    body("apellido").notEmpty().isString().isLength({ min: 3, max: 25} ).withMessage("Debe enviar un apellido."),
-    body("dni").notEmpty().isString().isLength({ min: 7, max: 8} ).withMessage("Debe enviar un dni."),
-    body("direccion").notEmpty().isString().isLength({ min: 6, max: 70} ).withMessage("Debe enviar un domicilio."),
+    body("apellido").notEmpty().isString().isLength({ min: 3, max: 25} ).withMessage("Debe enviar un apellido válido."),
+    body("dni").notEmpty().isString().isLength({ min: 7, max: 8} ).withMessage("Debe enviar un dni válido."),
+    body("direccion").notEmpty().isString().isLength({ min: 6, max: 70} ).withMessage("Debe enviar un domicilio válido."),
     body("celular").notEmpty().isString().isLength({ min: 7, max: 8} ).withMessage("Debe enviar un número de celular (381) + ......."),
-    body("mail").notEmpty().isString().isEmail().withMessage("Debe enviar un mail."),
+    body("mail").notEmpty().isString().isEmail().withMessage("Debe enviar un mail."), 
+    body("contrasenia").notEmpty().isLength({ min: 8 }).withMessage("Debe enviar una contraseña válida."),
     // Faltaria un custom para verificar si el mail es único (lo hace el models pero se puede hacer aquí con .custom)
-  ], 
+  ],
+  verifyJWT,
   expressValidations, 
+  emailValidation,
+  dniValidation,
   createAdmin
 );
 
@@ -38,6 +44,7 @@ adminRouter.delete("/delete-by-id/:id",
   [
     param("id").isMongoId().withMessage("Debe mandar un ID valido"),
   ], 
+  verifyJWT,
   expressValidations,
   deleteAdmin
 );
@@ -53,6 +60,7 @@ adminRouter.get("/find-by-id/:id",
   [
     param("id").isMongoId().withMessage("Debe mandar un ID valido"),
   ], 
+  verifyJWT,
   expressValidations,
   findAdminById
 );
@@ -65,6 +73,7 @@ adminRouter.put("/update-mail-by-id/:id",
     param("id").isMongoId().withMessage("Debe mandar un ID valido"),
     body("mail").notEmpty().isString().isEmail().withMessage("Debe mandar un mail valido"),
   ],
+  verifyJWT,
   expressValidations,
   updateAdminByID_mail
 );
@@ -75,6 +84,7 @@ adminRouter.put("/update-phone-by-id/:id",
     param("id").isMongoId().withMessage("Debe mandar un ID valido"),
     body("celular").notEmpty().isString().isLength({ min: 7, max: 8} ).withMessage("Debe mandar un celular valido"),
   ],
+  verifyJWT,
   expressValidations,
   updateAdminByID_celular
 );
@@ -85,6 +95,7 @@ adminRouter.put("/update-phone-by-id/:id",
     param("id").isMongoId().withMessage("Debe mandar un ID valido"),
     body("direccion").notEmpty().isString().isLength({ min: 6, max: 70} ).withMessage("Debe mandar un domicilio valido [6-70 Caracteres]"),
   ],
+  verifyJWT,
   expressValidations,
   updateAdminByID_direccion
 );

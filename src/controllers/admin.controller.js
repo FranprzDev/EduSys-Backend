@@ -1,14 +1,22 @@
+const { encriptarContrasenia } = require("../common/functions");
 const Admin = require("../models/admin.model");
+const bcrypt = require("bcryptjs");
+
+/* -> Creación en DB Admin <- */
 
 const createAdmin = async (req, res) => {
   // Realizo la destructuración de la req
-  const { nombre, apellido, direccion, dni, celular, mail } = req.body;
+  const { nombre, apellido, contrasenia, direccion, dni, celular, mail } =
+    req.body;
+
+  // Encripto la contraseña
+  encriptarContrasenia(contrasenia);
 
   // Genero mediante el modelo el Administrador
-
-  const adminGenerado = new Admin({
+  const admin = new Admin({
     nombre: nombre,
     apellido: apellido,
+    contrasenia: hashedContra,
     direccion: direccion,
     dni: dni,
     celular: celular,
@@ -16,55 +24,59 @@ const createAdmin = async (req, res) => {
   });
 
   // Espero que se guarde
-  await adminGenerado.save();
+  await admin.save();
 
   // Genero el código HTTP & Un mensaje de respueta
-  res
-    .status(201)
-    .json({ message: `Se creo el Administrador ${nombre} ${apellido}` });
+  res.status(201);
+  res.json({ message: `Se creo el Administrador ${nombre} ${apellido}` });
 };
 
-const deleteAdmin = async (req, res) => {
-  const adminGenerado = await Admin.findById(req.params.id);
+/* -> Borrado en DB Admin */
 
-  if (adminGenerado === null) {
+const deleteAdmin = async (req, res) => {
+  const admin = await Admin.findById(req.params.id);
+
+  if (admin === null) {
     res.status(404);
     return res.json({ message: "Administrador no encontrado" });
   }
 
   const filters = { _id: req.params.id };
-  await adminGenerado.deleteOne(filters);
+  await admin.deleteOne(filters);
 
-  res.status(204);
+  res.status(200);
   res.json({ message: "Se elimino el administrador de la DB." });
 };
 
+/* -> Busqueda en DB Admin <- */
 const findAllAdmin = async (req, res) => {
-  const adminGenerado = await Admin.find();
-  if (adminGenerado.length == 0) {
+  const admin = await Admin.find();
+  if (admin.length == 0) {
     res.status(404);
     res.json({ message: "No se pudo encontrar la tabla de Administradores." });
   }
 
   res.status(200);
-  res.json({ adminGenerado });
+  res.json({ admin });
   // si aquí no hay nada en la DB tira un error.
 };
 
 const findAdminById = async (req, res) => {
-  const adminGenerado = await Admin.findById(req.params.id);
+  const admin = await Admin.findById(req.params.id);
 
-  if (adminGenerado === null) {
+  if (admin === null) {
     res.status(404);
     return res.json({ message: "Administrador no encontrado" });
   }
 
-  res.json({ message: "Se encontró el administrador", datos: adminGenerado });
+  res.json({ message: "Se encontró el administrador", datos: admin });
 };
 
+/* -> Actualización en DB Admin <- */
+
 const updateAdminByID_mail = async (req, res) => {
-  const adminGenerado = await Admin.findById(req.params.id);
-  if (adminGenerado === null) {
+  const admin = await Admin.findById(req.params.id);
+  if (admin === null) {
     res.status(404);
     return res.json({ message: "Administrador no encontrado" });
   }
@@ -76,15 +88,15 @@ const updateAdminByID_mail = async (req, res) => {
 
   res.status(200);
   res.json({
-    message: `Se encontro el administrador ${adminGenerado.nombre} ${adminGenerado.apellido} y se actualizaron sus datos [Mail]`,
-    datos: adminGenerado,
+    message: `Se encontro el administrador ${admin.nombre} ${admin.apellido} y se actualizaron sus datos [Mail]`,
+    datos: admin,
   });
   // Preguntar por que los datos que llegan al postman aún no están actualizados [como que van 1 atras]
 };
 
 const updateAdminByID_celular = async (req, res) => {
-  const adminGenerado = await Admin.findById(req.params.id);
-  if (adminGenerado === null) {
+  const admin = await Admin.findById(req.params.id);
+  if (admin === null) {
     res.status(404);
     return res.json({ message: "Administrador no encontrado" });
   }
@@ -96,14 +108,14 @@ const updateAdminByID_celular = async (req, res) => {
 
   res.status(200);
   res.json({
-    message: `Se encontro el administrador ${adminGenerado.nombre} ${adminGenerado.apellido} y se actualizaron sus datos [Mail]`,
-    datos: adminGenerado,
+    message: `Se encontro el administrador ${admin.nombre} ${admin.apellido} y se actualizaron sus datos [Mail]`,
+    datos: admin,
   });
 };
 
 const updateAdminByID_direccion = async (req, res) => {
-  const adminGenerado = await Admin.findById(req.params.id);
-  if (adminGenerado === null) {
+  const admin = await Admin.findById(req.params.id);
+  if (admin === null) {
     res.status(404);
     return res.json({ message: "Administrador no encontrado" });
   }
@@ -115,8 +127,8 @@ const updateAdminByID_direccion = async (req, res) => {
 
   res.status(200);
   res.json({
-    message: `Se encontro el administrador ${adminGenerado.nombre} ${adminGenerado.apellido} y se actualizaron sus datos [Mail]`,
-    datos: adminGenerado,
+    message: `Se encontro el administrador ${admin.nombre} ${admin.apellido} y se actualizaron sus datos [Mail]`,
+    datos: admin,
   });
 };
 
