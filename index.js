@@ -8,6 +8,7 @@ const adminRouter = require('./src/routes/admin.route')
 const adminAuthRouter = require('./src/routes/adminAuth.route')
 const { crearSuperAdmin } = require("./src/common/functions")
 const cors = require("cors")
+const morgan = require("morgan")
 
 
 // Inicializaciones
@@ -18,6 +19,10 @@ const port = 8000
 
 // Indico a mi aplicacion que podria recibir un json del usuario
 app.use(express.json({ limit: "50mb" }))
+
+if(process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"))
+}
 
 // Rutas para la aplicación
 app.use("/admin", adminRouter)

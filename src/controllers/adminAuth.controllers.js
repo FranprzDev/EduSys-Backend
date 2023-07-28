@@ -28,6 +28,11 @@ const loginAdmin = async (req, res) => {
   const token = jwt.sign(
     {
       id: admin._id,
+      nombre: admin.nombre,
+      apellido: admin.contrasenia,
+      direccion: admin.direccion,
+      dni: admin.dni,
+      celular: admin.celular,
       mail: admin.mail
     },
     JWT_SECRET
