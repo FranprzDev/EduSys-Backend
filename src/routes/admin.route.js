@@ -7,6 +7,7 @@ const {
   updateAdminByID_mail,
   updateAdminByID_celular,
   updateAdminByID_direccion,
+  updateCampID,
 } = require("../controllers/admin.controller")
 const { body, param } = require("express-validator");
 const { expressValidations } = require("../middlewares/common.validations");
@@ -98,6 +99,29 @@ adminRouter.put("/update-phone-by-id/:id",
   verifyJWT,
   expressValidations,
   updateAdminByID_direccion
+);
+
+adminRouter.put("/update-phone-by-id/:id", 
+  [
+    param("id").isMongoId().withMessage("Debe mandar un ID valido"),
+    body("celular").notEmpty().isString().isLength({ min: 7, max: 8} ).withMessage("Debe mandar un celular valido"),
+  ],
+  verifyJWT,
+  expressValidations,
+  updateAdminByID_celular
+);
+
+// Operación de Actualización Dirección por ID
+adminRouter.put("/update-camp-by-id/:id", 
+  [
+    param("id").isMongoId().withMessage("Debe mandar un ID valido"),
+    body("nombre").notEmpty().isString().isLength({ min: 3, max: 40} ).withMessage("Debe mandar un nombre válido [3-40 Caracteres]"),
+    body("apellido").notEmpty().isString().isLength({ min: 3, max: 40} ).withMessage("Debe mandar un apellido válido [3-40 Caracteres]"),
+    body("dni").notEmpty().isNumeric().isLength({ min: 7, max: 8} ).withMessage("Debe mandar un dni válido [7-8 Caracteres]"),
+  ],
+  verifyJWT,
+  expressValidations,
+  updateCampID
 );
 
 module.exports = adminRouter;

@@ -132,6 +132,27 @@ const updateAdminByID_direccion = async (req, res) => {
   });
 };
 
+const updateCampID = async (req, res) => {
+  const admin = await Admin.findById(req.params.id);
+  if (admin === null) {
+    res.status(404);
+    return res.json({ message: "Administrador no encontrado" });
+  }
+
+  // Lógica para la actualización por ID -> Nombre, Apellido y DNI y Contraseña
+  await Admin.findByIdAndUpdate(req.params.id, {
+    nombre: req.body.nombre,
+    apellido: req.body.apellido,
+    dni: req.body.dni,
+  });
+
+  res.status(200);
+  res.json({
+    message: `Se encontro el administrador.`,
+    datos: admin,
+  });
+};
+
 module.exports = {
   createAdmin,
   deleteAdmin,
@@ -140,4 +161,5 @@ module.exports = {
   updateAdminByID_mail,
   updateAdminByID_celular,
   updateAdminByID_direccion,
+  updateCampID,
 };
