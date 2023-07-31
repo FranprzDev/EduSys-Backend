@@ -4,14 +4,13 @@ const {
   deleteAdmin,
   findAllAdmin,
   findAdminById,
-  updateAdminByID_mail,
-  updateAdminByID_celular,
-  updateAdminByID_direccion,
+  updateCommonAdminByID,
   updateCampID,
+  actualizarPasswordByID,
 } = require("../controllers/admin.controller")
 const { body, param } = require("express-validator");
 const { expressValidations } = require("../middlewares/common.validations");
-const { emailValidation, dniValidation } = require("../middlewares/admin.validations");
+const { emailValidation, dniValidation, validarContrasenia } = require("../middlewares/admin.validations");
 // const { verifyToken } = require("../controllers/adminAuth.controllers");
 const { verifyJWT } = require("../middlewares/adminAuth.validations");
 
@@ -66,52 +65,33 @@ adminRouter.get("/find-by-id/:id",
   findAdminById
 );
 
-/* --> Actualización <-- */
-
-// Operación de Actualización Mail por ID
-adminRouter.put("/update-mail-by-id/:id", 
+// Actualizar Celular, Direccion & Mail para un Administrador Normal
+adminRouter.put("/update-common-by-id/:id", 
   [
     param("id").isMongoId().withMessage("Debe mandar un ID valido"),
+    body("celular").notEmpty().isString().isLength({ min: 7, max: 8} ).withMessage("Debe mandar un celular valido"),
+    body("direccion").notEmpty().isString().isLength({ min: 6, max: 70} ).withMessage("Debe mandar un domicilio valido [6-70 Caracteres]"),
     body("mail").notEmpty().isString().isEmail().withMessage("Debe mandar un mail valido"),
   ],
   verifyJWT,
+  emailValidation,
   expressValidations,
-  updateAdminByID_mail
+  updateCommonAdminByID
 );
 
-// Operación de Actualización Celular por ID
-adminRouter.put("/update-phone-by-id/:id", 
+
+adminRouter.put("/update-password/:id", 
   [
     param("id").isMongoId().withMessage("Debe mandar un ID valido"),
-    body("celular").notEmpty().isString().isLength({ min: 7, max: 8} ).withMessage("Debe mandar un celular valido"),
+    body("contrasenia").notEmpty().isLength({ min: 8 }).withMessage("Debe enviar una contraseña válida."),
   ],
   verifyJWT,
+  validarContrasenia,
   expressValidations,
-  updateAdminByID_celular
+  actualizarPasswordByID,
 );
 
-// Operación de Actualización Dirección por ID
-  adminRouter.put("/update-direction-by-id/:id", 
-  [
-    param("id").isMongoId().withMessage("Debe mandar un ID valido"),
-    body("direccion").notEmpty().isString().isLength({ min: 6, max: 70} ).withMessage("Debe mandar un domicilio valido [6-70 Caracteres]"),
-  ],
-  verifyJWT,
-  expressValidations,
-  updateAdminByID_direccion
-);
-
-adminRouter.put("/update-phone-by-id/:id", 
-  [
-    param("id").isMongoId().withMessage("Debe mandar un ID valido"),
-    body("celular").notEmpty().isString().isLength({ min: 7, max: 8} ).withMessage("Debe mandar un celular valido"),
-  ],
-  verifyJWT,
-  expressValidations,
-  updateAdminByID_celular
-);
-
-// Operación de Actualización Dirección por ID
+// Actualizar Nombre, Apellido y DNI solamente para super adminsitradores.
 adminRouter.put("/update-camp-by-id/:id", 
   [
     param("id").isMongoId().withMessage("Debe mandar un ID valido"),

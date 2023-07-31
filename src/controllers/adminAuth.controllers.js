@@ -25,11 +25,12 @@ const loginAdmin = async (req, res) => {
   }
 
   // Firmo el JWT
+
   const token = jwt.sign(
     {
       id: admin._id,
       nombre: admin.nombre,
-      apellido: admin.contrasenia,
+      apellido: admin.apellido,
       direccion: admin.direccion,
       dni: admin.dni,
       celular: admin.celular,
@@ -37,7 +38,7 @@ const loginAdmin = async (req, res) => {
     },
     JWT_SECRET
   );
-
+  
   // Genero el código HTTP & Un mensaje de respueta
   res.status(200);
   res.json({ access_token: token });

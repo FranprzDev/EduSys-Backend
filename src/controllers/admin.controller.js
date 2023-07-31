@@ -72,65 +72,56 @@ const findAdminById = async (req, res) => {
   res.json({ message: "Se encontró el administrador", datos: admin });
 };
 
-/* -> Actualización en DB Admin <- */
+/* -> Actualización en DB Admin Común  <- */
 
-const updateAdminByID_mail = async (req, res) => {
+const updateCommonAdminByID = async (req, res) => {
   const admin = await Admin.findById(req.params.id);
   if (admin === null) {
     res.status(404);
     return res.json({ message: "Administrador no encontrado" });
   }
 
-  // Lógica para la actualización por ID -> Mail
   await Admin.findByIdAndUpdate(req.params.id, {
     mail: req.body.mail,
-  });
-
-  res.status(200);
-  res.json({
-    message: `Se encontro el administrador ${admin.nombre} ${admin.apellido} y se actualizaron sus datos [Mail]`,
-    datos: admin,
-  });
-  // Preguntar por que los datos que llegan al postman aún no están actualizados [como que van 1 atras]
-};
-
-const updateAdminByID_celular = async (req, res) => {
-  const admin = await Admin.findById(req.params.id);
-  if (admin === null) {
-    res.status(404);
-    return res.json({ message: "Administrador no encontrado" });
-  }
-
-  // Lógica para la actualización por ID -> Celular
-  await Admin.findByIdAndUpdate(req.params.id, {
     celular: req.body.celular,
-  });
-
-  res.status(200);
-  res.json({
-    message: `Se encontro el administrador ${admin.nombre} ${admin.apellido} y se actualizaron sus datos [Mail]`,
-    datos: admin,
-  });
-};
-
-const updateAdminByID_direccion = async (req, res) => {
-  const admin = await Admin.findById(req.params.id);
-  if (admin === null) {
-    res.status(404);
-    return res.json({ message: "Administrador no encontrado" });
-  }
-
-  // Lógica para la actualización por ID -> Dirección
-  await Admin.findByIdAndUpdate(req.params.id, {
     direccion: req.body.direccion,
   });
 
-  res.status(200);
+  res.status(200)
   res.json({
-    message: `Se encontro el administrador ${admin.nombre} ${admin.apellido} y se actualizaron sus datos [Mail]`,
-    datos: admin,
-  });
-};
+    message: "Se encontró el administrador y se actualizaron sus campos."
+  })
+}
+
+/* -> Actualización de Contrasenia <- */
+
+  const actualizarPasswordByID = async (req, res) => {
+    const { contrasenia } = req.body;
+    const admin = await Admin.findById(req.params.id);
+
+    if (admin === null) {
+      res.status(404);
+      return res.json({ message: "Administrador no encontrado" });
+    }
+
+    // Encripto la contraseña
+
+    encriptarContrasenia(contrasenia);
+
+    // Actualizo la contraseña
+
+    await Admin.findByIdAndUpdate(req.params.id, {
+      contrasenia: hashedContra,
+    });
+
+    res.status(200);
+
+    res.json({
+      message: "Se encontró el administrador y se actualizo su contraseña.",
+    });
+  };
+
+/* -> Actualización en la Base de Datos para SUPERAdmin <- */
 
 const updateCampID = async (req, res) => {
   const admin = await Admin.findById(req.params.id);
@@ -158,8 +149,7 @@ module.exports = {
   deleteAdmin,
   findAllAdmin,
   findAdminById,
-  updateAdminByID_mail,
-  updateAdminByID_celular,
-  updateAdminByID_direccion,
+  updateCommonAdminByID,
   updateCampID,
+  actualizarPasswordByID,
 };
