@@ -1,9 +1,12 @@
 const { Router } = require("express");
 const {
-  createAdmin,
-  deleteAdmin,
-  findAllAdmin,
-  findAdminById,
+  createAlumno,
+  deleteAlumno,
+  findAllAlumno,
+  findAlumnoById,
+  actualizarAlDia,
+  findAnioCursado,
+
 
 } = require("../controllers/alumno.controller")
 const { body, param } = require("express-validator");
@@ -62,6 +65,25 @@ alumnoRouter.get("/find-by-id/:id",
 );
 
 /* --> Actualización <-- */
+alumnoRouter.put("/update-alDia-by-id/:id"),
+[
+    param("id").isMongoId().withMessage("Debe enviar si esta al día"),
+    body("alDia").notEmpty().isBoolean().withMessage("Debe enviar si esta ala día."),
+],
+
+alumnoRouter.put("/update-anioCursao-by-id/:id"),
+[
+    param("id").isMongoId().withMessage("Debe enviar el año cursado"),
+    body("anioCursado").notEmpty().isNumeric().isLength({ min: 1, max: 1} ).withMessage("Debe enviar el año de cursado."),
+
+]
+
+
+
+verifyJWT,
+expressValidations,
+
+);
 
 
 
