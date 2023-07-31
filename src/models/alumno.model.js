@@ -17,6 +17,14 @@ const alumnoSchema = mongoose.Schema({
         minLength: 3,
         maxLength: 25
     },
+    dni: {
+        type: String,
+        required: true,
+        trim: true,
+        unique: true,
+        minLength: 6,
+        maxLength: 8,
+    }
     anioCursado: {
         type: Number ,
         required: true,
