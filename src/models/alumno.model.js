@@ -17,7 +17,7 @@ const alumnoSchema = mongoose.Schema({
         minLength: 3,
         maxLength: 25
     },
-    añoCursado: {
+    anioCursado: {
         type: Number ,
         required: true,
         trim: true, 

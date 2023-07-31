@@ -6,7 +6,7 @@ const bcrypt = require("bcryptjs");
 
 const createAlumno = async (req, res) => {
   // Realizo la destructuración de la req
-  const { nombre, apellido, contrasenia, alDia, } =
+  const { nombre, apellido, alDia, anioCursado} =
     req.body;
 
   // Encripto la contraseña
@@ -17,7 +17,7 @@ const createAlumno = async (req, res) => {
     nombre: nombre,
     apellido: apellido,
     contrasenia: hashedContra,
-    alDia: booleanito,
+    alDia: true,
   });
 
   // Espero que se guarde
@@ -69,34 +69,55 @@ const findAlumnoById = async (req, res) => {
   res.json({ message: "Se encontró el Alumno", datos: alumno });
 };
 
-/* -> Actualización en DB Admin <- */
-
-const updateAdminByID_mail = async (req, res) => {
-  const admin = await Admin.findById(req.params.id);
-  if (admin === null) {
-    res.status(404);
-    return res.json({ message: "Administrador no encontrado" });
-  }
-
-  // Lógica para la actualización por ID -> Mail
-  await Admin.findByIdAndUpdate(req.params.id, {
-    mail: req.body.mail,
-  });
-
-  res.status(200);
-  res.json({
-    message: `Se encontro el administrador ${admin.nombre} ${admin.apellido} y se actualizaron sus datos [Mail]`,
-    datos: admin,
-  });
-  // Preguntar por que los datos que llegan al postman aún no están actualizados [como que van 1 atras]
-};
-
+/* ->Al día ...<- */
+  const estaAlDia = async (req, res) => {
+    const { pagosRealizados, cuotasMensuales } = req.body;
+  
+    try {
+      if (pagosRealizados.length === cuotasMensuales.length) {
+        for (let i = 0; i < pagosRealizados.length; i++) {
+          if (pagosRealizados[i] !== cuotasMensuales[i]) {
+            return false;
+          }
+        }
+        return true;
+      } else {
+        return false;
+      }
+    } catch (error) {
+      
+      res.status(404);
+      res.json({ message: "Error al verificar si está al día", error: error.message });
+      return false; 
+    }
+  }; 
+/* ->cursado ...<- */
+  const findAnioCursado = async (req, res) => {
+    const { alumnoId } = req.params;
+  
+    try {
+      const alumno = await Alumno.findById(alumnoId);
+  
+      if (!alumno) {
+        res.status(404).json({ message: "Alumno no encontrado" });
+      } else {
+        
+        const anioCursado = alumno.anioCursado;
+        res.status(200).json({ anioCursado });
+      }
+    } catch (error) {
+      res.status(500).json({ message: "Error al buscar el año de cursado", error: error.message });
+    }
+  };
+  
 
 module.exports = {
  createAlumno,
   deleteAlumno,
   findAllAlumno,
   findAlumnoById,
+  estaAlDia,
+  findAnioCursado
   
  
 };
