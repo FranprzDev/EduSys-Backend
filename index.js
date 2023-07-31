@@ -6,6 +6,7 @@ require('dotenv').config()
 const Admin = require("./src/models/admin.model")
 const adminRouter = require('./src/routes/admin.route')
 const adminAuthRouter = require('./src/routes/adminAuth.route')
+const institutionRouter = require('./src/routes/institution.route')
 const { crearSuperAdmin } = require("./src/common/functions")
 const cors = require("cors")
 const morgan = require("morgan")
@@ -27,6 +28,7 @@ if(process.env.NODE_ENV === "development") {
 // Rutas para la aplicación
 app.use("/admin", adminRouter)
 app.use("/auth", adminAuthRouter)
+app.use("/inst", institutionRouter)
 
 // Conexión a la DB (Uso de dotenv para proteger datos SENSIBLES)
 
