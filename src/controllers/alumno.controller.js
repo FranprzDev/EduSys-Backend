@@ -1,6 +1,5 @@
-const { encriptarContrasenia } = require("../common/functions");
+
 const Alumno = require("../models/alumno.model");
-const bcrypt = require("bcryptjs");
 
 /* -> Creación en DB Alumno <- */
 
@@ -9,15 +8,12 @@ const createAlumno = async (req, res) => {
   const { nombre, apellido, alDia, anioCursado} =
     req.body;
 
-  // Encripto la contraseña
-  encriptarContrasenia(contrasenia);
-
   // Genero mediante el modelo el Administrador
   const alumno = new Alumno({
     nombre: nombre,
     apellido: apellido,
-    contrasenia: hashedContra,
-    alDia: true,
+    alDia: alDia,
+    anioCursado: anioCursado,
   });
 
   // Espero que se guarde
@@ -69,7 +65,7 @@ const findAlumnoById = async (req, res) => {
   res.json({ message: "Se encontró el Alumno", datos: alumno });
 };
 
-/* ->Al día ...<- */
+/* ->Al día ...
   const estaAlDia = async (req, res) => {
     const { pagosRealizados, cuotasMensuales } = req.body;
   
@@ -89,9 +85,9 @@ const findAlumnoById = async (req, res) => {
       res.status(404);
       res.json({ message: "Error al verificar si está al día", error: error.message });
       return false; 
-    }
-  }; 
-/* ->cursado ...<- */
+    } 
+  }; <- */
+/* ->cursado ...
   const findAnioCursado = async (req, res) => {
     const { alumnoId } = req.params;
   
@@ -108,7 +104,25 @@ const findAlumnoById = async (req, res) => {
     } catch (error) {
       res.status(500).json({ message: "Error al buscar el año de cursado", error: error.message });
     }
-  };
+  };<- */
+
+  const actualizarAlDia = async (req, res) => {
+    const {alDia } = req.body;
+    const alumno = await Alumno.findById (req.params.id)
+    if (alumno === null ) {
+      res.status(404)
+      return res.json({ message: "Alumno no encontrado" });
+    }
+    await Alumno.findByIdAndUpdate(req.params.id, {
+      alDia: !alDia,
+    });
+  
+    res.status(200)
+    res.json({
+      message: "Se encontró el Alumno y se cambio su estado."
+    })
+
+  }
   
 
 module.exports = {
@@ -116,8 +130,8 @@ module.exports = {
   deleteAlumno,
   findAllAlumno,
   findAlumnoById,
-  estaAlDia,
-  findAnioCursado
+  findAnioCursado,
+  actualizarAlDia,
   
  
 };
