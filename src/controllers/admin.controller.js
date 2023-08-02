@@ -75,7 +75,7 @@ const findAdminById = async (req, res) => {
 /* -> Actualización en DB Admin Común  <- */
 
 const updateCommonAdminByID = async (req, res) => {
-  const admin = await Admin.findById(req.params.id);
+  const admin = Admin.findById(req.params.id);
   if (admin === null) {
     res.status(404);
     return res.json({ message: "Administrador no encontrado" });
@@ -96,7 +96,7 @@ const updateCommonAdminByID = async (req, res) => {
 /* -> Actualización de Contrasenia <- */
 
   const actualizarPasswordByID = async (req, res) => {
-    const { contrasenia } = req.body;
+    const { pass, retryPass } = req.body;
     const admin = await Admin.findById(req.params.id);
 
     if (admin === null) {
@@ -106,12 +106,15 @@ const updateCommonAdminByID = async (req, res) => {
 
     // Encripto la contraseña
 
-    encriptarContrasenia(contrasenia);
+    if(pass !== retryPass){
+      res.status(400);
+      return res.json({ message: "Las contraseñas no coinciden." });
+    }
 
     // Actualizo la contraseña
 
     await Admin.findByIdAndUpdate(req.params.id, {
-      contrasenia: hashedContra,
+      contrasenia: encriptarContrasenia(pass),
     });
 
     res.status(200);

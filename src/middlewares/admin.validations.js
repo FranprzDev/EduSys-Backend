@@ -25,7 +25,7 @@ const dniValidation = async (req, res, next) => {
 }
 
 const validarContrasenia = (req, res, next) => {
-  const contrasenia = req.body.contrasenia; 
+  const contrasenia = req.body.pass; 
 
   // Expresiones regulares para validar los requisitos
   const tieneMayuscula = /[A-Z]/.test(contrasenia);
