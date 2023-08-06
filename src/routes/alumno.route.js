@@ -5,25 +5,22 @@ const {
   findAllAlumno,
   findAlumnoById,
   actualizarAlDia,
-  findAnioCursado,
+  actualizarAnioCursado,
+  actualizarDatos,
 } = require("../controllers/alumno.controller");
 const { body, param } = require("express-validator");
-const { expressValidations } = require("../middlewares/common.validations");
-// const { verifyToken } = require("../controllers/adminAuth.controllers");
-//const { verifyJWT } = require("../middlewares/adminAuth.validations");
 const {
-  deleteAlumno,
-  findAllAlumno,
-} = require("../controllers/alumno.controller");
+  expressValidations,
+  dniExistValidation,
+} = require("../middlewares/common.validations");
+const { verifyJWT } = require("../middlewares/adminAuth.validations");
 
 const alumnoRouter = Router();
-
-/* Todas las rutas deben estar verificadas con JWT por que SÓLAMENTE el superAdmin debe acceder al CRUD de Administradores */
 
 /* --> Creación <-- */
 
 alumnoRouter.post(
-  "/create",
+  "/crear",
   [
     body("nombre")
       .notEmpty()
@@ -52,8 +49,8 @@ alumnoRouter.post(
     // Faltaria un custom para verificar si el mail es único (lo hace el models pero se puede hacer aquí con .custom)
   ],
   verifyJWT,
+  dniExistValidation,
   expressValidations,
-  dniValidation,
   createAlumno
 );
 
@@ -83,26 +80,46 @@ alumnoRouter.get(
 );
 
 /* --> Actualización <-- */
-alumnoRouter.put("/update-alDia-by-id/:id"),
+alumnoRouter.put(
+  "/update-alDia-by-id/:id",
   [
-    param("id").isMongoId().withMessage("Debe enviar si esta al día"),
+    param("id").isMongoId().withMessage("Debe enviar el ID del alumno."),
     body("alDia")
       .notEmpty()
       .isBoolean()
       .withMessage("Debe enviar si esta ala día."),
   ],
-  alumnoRouter.put(
-    "/update-anioCursao-by-id/:id",
-    [
-      param("id").isMongoId().withMessage("Debe enviar el año cursado"),
-      body("anioCursado")
-        .notEmpty()
-        .isNumeric()
-        .isLength({ min: 1, max: 1 })
-        .withMessage("Debe enviar el año de cursado."),
-    ],
-    verifyJWT,
-    expressValidations
-  );
+  verifyJWT,
+  expressValidations,
+  actualizarAlDia
+);
+
+alumnoRouter.put(
+  "/update-anioCursado-by-id/:id",
+  [param("id").isMongoId().withMessage("Debe enviar el ID del alumno.")],
+  verifyJWT,
+  expressValidations,
+  actualizarAnioCursado
+);
+
+alumnoRouter.put(
+  "/update-datos-by-id/:id",
+  [
+    param("id").isMongoId().withMessage("Debe enviar el ID del alumno."),
+    body("nombre")
+      .notEmpty()
+      .isString()
+      .isLength({ min: 3, max: 25 })
+      .withMessage("Debe enviar un nombre válido."),
+    body("apellido")
+      .notEmpty()
+      .isString()
+      .isLength({ min: 3, max: 25 })
+      .withMessage("Debe enviar un apellido válido."),
+  ],
+  verifyJWT,
+  expressValidations,
+  actualizarDatos,
+);
 
 module.exports = alumnoRouter;

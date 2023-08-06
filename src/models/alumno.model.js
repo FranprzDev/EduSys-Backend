@@ -24,7 +24,7 @@ const alumnoSchema = mongoose.Schema({
         unique: true,
         minLength: 6,
         maxLength: 8,
-    }
+    },
     anioCursado: {
         type: Number ,
         required: true,
@@ -37,12 +37,7 @@ const alumnoSchema = mongoose.Schema({
         required: true,
         trim: true,
         unique: false,
-    },
-  
-   
-  
-   
-    
+    },    
 })
 
 const Alumno = mongoose.model("Alumno", alumnoSchema)
