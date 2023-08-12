@@ -121,5 +121,5 @@ alumnoRouter.put(
   expressValidations,
   actualizarDatos,
 );
-
+  
 module.exports = alumnoRouter;

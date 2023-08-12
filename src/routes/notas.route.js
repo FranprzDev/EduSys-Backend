@@ -1,5 +1,5 @@
 const express = require("express");
-const { body } = require("express-validator");
+const { body, param } = require("express-validator");
 const { 
   crearNota, 
   eliminarNota, 
@@ -91,10 +91,10 @@ notasRouter.get("/calcular-promedio",
   promedioCursada
 )
 
-notasRouter.get("/encontrar-notas-anio", 
+notasRouter.get("/alumno/:idAlumno/:anio", 
   [
-    body("idAlumno").notEmpty().isMongoId().withMessage("Debe enviar un id de alumno válido."),
-    body("anio").notEmpty().isNumeric().withMessage("Debe enviar un año válido."),
+    param("idAlumno").notEmpty().isMongoId().withMessage("Debe enviar un id de alumno válido."),
+    param("anio").notEmpty().isNumeric().withMessage("Debe enviar un año válido."),
   ],
   esAnioValido,
   expressValidations,

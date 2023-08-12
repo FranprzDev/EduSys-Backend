@@ -132,7 +132,10 @@ const promedioCursada = async (req, res) => {
 }
 
 const encontrarNotas = async (req, res) => {
-  const { idAlumno, anio } = req.body;
+  const idAlumno = req.params.idAlumno;
+  const anio = req.params.anio;
+
+  console.log(idAlumno + anio)
 
   try {
     const notas = await Notas.find({ alumno: idAlumno, anio: anio });
