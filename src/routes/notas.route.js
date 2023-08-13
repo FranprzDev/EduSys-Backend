@@ -5,7 +5,9 @@ const {
   eliminarNota, 
   promedioCursoAnio, 
   promedioCursada,
-  encontrarNotas, } = require("../controllers/notas.controller");
+  encontrarNotas,
+  encontrarTodasLasNotas,
+ } = require("../controllers/notas.controller");
 const {
   esNotaValida,
   esAnioValido,
@@ -67,38 +69,22 @@ notasRouter.delete(
 
 // Obtengo el promedio por año
 notasRouter.get(
-  "/calcular-promedio-anio",
+  "/calcular-promedio-anio/:anio/:idAlumno",
   [
-    body("idAlumno")
-      .notEmpty()
-      .isMongoId()
-      .withMessage("Debe enviar un id de alumno válido."),
-    body("anio")
-      .notEmpty()
-      .isNumeric()
-      .withMessage("Debe enviar un año válido."),
+    param("anio").notEmpty().isNumeric().withMessage("Debe enviar un año válido."),
+    param("idAlumno").notEmpty().isMongoId().withMessage("Debe enviar un id de alumno válido."),
   ],
   esAnioValido,
   expressValidations,
   promedioCursoAnio
 );
 
-notasRouter.get("/calcular-promedio",  
-  [
-    body("idAlumno").notEmpty().isMongoId().withMessage("Debe enviar un id de alumno válido."), 
-  ],
-  expressValidations,
-  promedioCursada
-)
-
-notasRouter.get("/alumno/:idAlumno/:anio", 
+notasRouter.get("/alumno/:idAlumno",
   [
     param("idAlumno").notEmpty().isMongoId().withMessage("Debe enviar un id de alumno válido."),
-    param("anio").notEmpty().isNumeric().withMessage("Debe enviar un año válido."),
   ],
-  esAnioValido,
   expressValidations,
-  encontrarNotas
+  encontrarTodasLasNotas
 )
 
 module.exports = notasRouter;

@@ -43,29 +43,35 @@ const alumnoSchema = mongoose.Schema({
 })
 
 alumnoSchema.pre("save", async function (next) {
-    if (!this.isNew) {
-      return next();
-    }
-  
-    try {
-      const materias = await Materia.find(); // Obtener todas las materias
-      const notasPromises = materias.map(async (materia) => {
+  if (!this.isNew) {
+    return next();
+  }
+
+  try {
+    const materias = await Materia.find(); // Obtener todas las materias
+    const notasPromises = [];
+
+    for (let anio = 1; anio <= this.anioCursado; anio++) {
+      materias.forEach(async (materia) => {
         const nota = new Nota({
           materia: materia._id,
           alumno: this._id,
           nombreMateria: materia.nombre,
-          anio: this.anioCursado,
+          anio: anio,
           nota: 0,
         });
         await nota.save();
+        notasPromises.push(nota);
       });
-  
-      await Promise.all(notasPromises);
-      next();
-    } catch (error) {
-      next(error);
     }
-  });
+
+    await Promise.all(notasPromises);
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
 
 const Alumno = mongoose.model("Alumno", alumnoSchema)
 

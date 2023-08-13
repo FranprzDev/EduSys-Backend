@@ -57,14 +57,14 @@ const deleteAlumno = async (req, res) => {
 /* -> Busqueda en DB Alumno <- */
 const findAllAlumno = async (req, res) => {
   const alumno = await Alumno.find();
-  if (alumno.length == 0) {
+  
+  if (alumno === null) {
     res.status(404);
-    res.json({ message: "No se pudo encontrar la tabla de Alumnos." });
+    return res.json({ message: "Alumnos no encontrados" });
   }
 
   res.status(200);
   res.json({ alumno });
-  // si aquí no hay nada en la DB tira un error.
 };
 
 const findAlumnoById = async (req, res) => {
@@ -81,8 +81,6 @@ const findAlumnoById = async (req, res) => {
 const actualizarAlDia = async (req, res) => {
   const { alDia } = req.body;
   const alumno = await Alumno.findById(req.params.id);
-
-  console.log(alumno);
 
   if (!alumno) {
     res.status(404);
@@ -119,24 +117,24 @@ const actualizarAnioCursado = async (req, res) => {
     anioCursado: nuevoAnioCursado
   })
 
-  // Vamos a hacer la lógica para que se generen las notas para cada materia del alumno
-  // de modo automático una vez que se añada un año.
-  // Para eso vamos a tener que importar el modelo de Notas y Materias
-  // y utilizar el método create() para generar las notas.
+  const materias = await Materias.find(); // Obtener todas las materias
 
-  const materias = await Materias.find()
-  const notasPromises = materias.map(async (materia) => {
+  const notasPromises = [];
+  materias.forEach(async (materia) => {
     const nota = new Notas({
       materia: materia._id,
-      alumno: this._id,
+      alumno: idAlumno,
       nombreMateria: materia.nombre,
-      anio: this.anioCursado,
+      anio: nuevoAnioCursado,
       nota: 0,
     });
-
+  
     await nota.save();
-  })
-
+    notasPromises.push(nota);
+  });
+  
+  // Esperar a que se completen todas las promesas de guardado de notas
+  await Promise.all(notasPromises);
 
   res.status(200)
   res.json({ message: "Se actualizo el año de cursado en (1)." })
