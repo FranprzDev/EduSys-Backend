@@ -1,4 +1,6 @@
 const mongoose = require("mongoose")
+const Materia = require("./materias.model");
+const Nota = require("./notas.model");
 
 const alumnoSchema = mongoose.Schema({
     nombre: {
@@ -39,6 +41,31 @@ const alumnoSchema = mongoose.Schema({
         unique: false,
     },    
 })
+
+alumnoSchema.pre("save", async function (next) {
+    if (!this.isNew) {
+      return next();
+    }
+  
+    try {
+      const materias = await Materia.find(); // Obtener todas las materias
+      const notasPromises = materias.map(async (materia) => {
+        const nota = new Nota({
+          materia: materia._id,
+          alumno: this._id,
+          nombreMateria: materia.nombre,
+          anio: this.anioCursado,
+          nota: 0,
+        });
+        await nota.save();
+      });
+  
+      await Promise.all(notasPromises);
+      next();
+    } catch (error) {
+      next(error);
+    }
+  });
 
 const Alumno = mongoose.model("Alumno", alumnoSchema)
 
