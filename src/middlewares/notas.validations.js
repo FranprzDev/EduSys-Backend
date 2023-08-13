@@ -9,7 +9,7 @@ const anioCoincidente = async (req, res, next) => {
         return res.status(404).json({ message: "Alumno no encontrado" });
     } 
 
-    if (alumno.anioCursado !== anio) {
+    if (anio > alumno.anioCursado) {
         return res.status(409).json({ message: "El año de cursada no coincide con el año de la nota" });
     }
 

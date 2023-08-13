@@ -2,7 +2,7 @@ const Alumno = require("../models/alumno.model");
 const Materias = require("../models/materias.model");
 const Notas = require("../models/notas.model");
 
-const crearNota = async (req, res) => {
+const editarNota = async (req, res) => {
   try {
     const { idAlumno, idMateria, anio, nota } = req.body;
 
@@ -13,31 +13,27 @@ const crearNota = async (req, res) => {
       return res.status(404).json({ message: "Alumno o Materia no encontrados" });
     }
 
-    // Verifico si ya hay alguna materia con nota cargada 
-    // (Es decir un mismo alumno no puede tener dos notas para la misma materia en el mismo año)
+    const notaEncontrada = await Notas.findOneAndUpdate(
+      {
+        alumno: idAlumno,
+        materia: idMateria,
+        anio,
+      },
+      {
+        nota,
+      }
+    );
 
-    const notaExistente = await Notas.findOne({ alumno: idAlumno, materia: idMateria, anio });
-
-    if (notaExistente) {
-      // Error 409 -> Conflicto.
-      return res.status(409).json({ message: "Ya existe una nota para el alumno y materia indicados" });
+    if (!notaEncontrada) {
+      return res.status(404).json({ message: "Nota no encontrada" });
     }
 
-    const nuevaNota = new Notas({
-      alumno: idAlumno,
-      materia: idMateria,
-      anio,
-      nota,
-    });
-
-    await nuevaNota.save();
-    
-    res.status(200)
-    res.json({ message: "Se guardo correctamente la nota. "});
+    res.status(200);
+    res.json({ message: "Se edito correctamente la nota" });
   } catch (error) {
-    res.status(500).json({ message: "Error al crear la nota" });
+    res.status(500).json({ message: "Error al editar la nota" });
   }
-};
+}
 
 const eliminarNota = async (req, res) => {
   const { idAlumno, idMateria, anio } = req.body;
@@ -74,7 +70,6 @@ const promedioCursoAnio = async (req, res) => {
     const notas = await Notas.find({ alumno: idAlumno, anio: anio });
     // Esto es un array con las notas que encontró
 
-    console.log(notas)
     if(notas.length === 0) {
       return res.status(404).json({ message: "No hay notas para el año indicado" });
     }
@@ -135,8 +130,6 @@ const encontrarNotas = async (req, res) => {
   const idAlumno = req.params.idAlumno;
   const anio = req.params.anio;
 
-  console.log(idAlumno + anio)
-
   try {
     const notas = await Notas.find({ alumno: idAlumno, anio: anio });
     // Esto es un array con las notas que encontró
@@ -145,17 +138,29 @@ const encontrarNotas = async (req, res) => {
       return res.status(404).json({ message: "No hay notas para el año indicado" });
     }
 
+    // Utilizo un map para quedarme solo con los datos que me interesan.
+    
+    const notasFiltradas = notas.map(nota => {
+      return {
+        materia: nota.nombreMateria,
+        nota: nota.nota,
+        anio: nota.anio,
+        idMateria: nota.materia,
+      }
+    }
+    )
+
     res.status(200);
-    res.json({ notas });
+    res.json({ notasFiltradas });
   } catch (error) {
     res.status(500).json({ message: "Error al encontrar las notas" });
 }
 }
 
 module.exports = {
-    crearNota,
     eliminarNota,
     promedioCursoAnio,
     promedioCursada,
     encontrarNotas,
+    editarNota,
 }

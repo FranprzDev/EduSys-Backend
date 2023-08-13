@@ -1,7 +1,7 @@
 const express = require("express");
 const { body, param } = require("express-validator");
-const { 
-  crearNota, 
+const {  
+  editarNota,
   eliminarNota, 
   promedioCursoAnio, 
   promedioCursada,
@@ -16,7 +16,7 @@ const { anioCoincidente } = require("../middlewares/notas.validations")
 const notasRouter = express.Router();
 
 notasRouter.post(
-  "/crear-nota",
+  "/editar-nota",
   [
     body("idAlumno")
       .notEmpty()
@@ -40,7 +40,7 @@ notasRouter.post(
   anioCoincidente,
   esNotaValida,
   expressValidations,
-  crearNota
+  editarNota,
 );
 
 notasRouter.delete(

@@ -4,6 +4,7 @@ const notaSchema = new mongoose.Schema({
     // Establecemos las relaciones con los moedlos mediante el ObjectID (Mongo-ID)
   materia: { type: mongoose.Schema.Types.ObjectId, ref: 'Materia' },
   alumno: { type: mongoose.Schema.Types.ObjectId, ref: 'Alumno' },
+  nombreMateria: String,
   anio: Number,
   nota: Number,
 });
