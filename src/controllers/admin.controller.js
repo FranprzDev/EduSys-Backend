@@ -75,6 +75,8 @@ const findAdminById = async (req, res) => {
 /* -> Actualización en DB Admin Común  <- */
 
 const updateCommonAdminByID = async (req, res) => {
+  console.log(req.body)
+  console.log(req.params)
   const admin = Admin.findById(req.params.id);
   if (admin === null) {
     res.status(404);

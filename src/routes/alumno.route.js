@@ -68,7 +68,7 @@ alumnoRouter.delete(
 /* --> Busqueda <-- */
 
 // Operación de Busqueda Total
-alumnoRouter.get("/findall", findAllAlumno);
+alumnoRouter.get("/findall", verifyJWT, expressValidations, findAllAlumno);
 
 // Operación de Busqueda por ID
 alumnoRouter.get(

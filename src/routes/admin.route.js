@@ -69,7 +69,7 @@ adminRouter.get("/find-by-id/:id",
 adminRouter.put("/update-common-by-id/:id", 
   [
     param("id").isMongoId().withMessage("Debe mandar un ID valido"),
-    body("celular").notEmpty().isString().isLength({ min: 7, max: 8} ).withMessage("Debe mandar un celular valido"),
+    body("celular").notEmpty().isLength({ min: 7, max: 8} ).withMessage("Debe mandar un celular valido"),
     body("direccion").notEmpty().isString().isLength({ min: 6, max: 70} ).withMessage("Debe mandar un domicilio valido [6-70 Caracteres]"),
     body("mail").notEmpty().isString().isEmail().withMessage("Debe mandar un mail valido"),
   ],

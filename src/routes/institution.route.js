@@ -16,6 +16,7 @@ instRouter.post(
         body("mailInst").notEmpty().isString().isEmail().isLength({ min: 5, max: 40 }).withMessage("Debe enviar un mail de la institución válido."), 
         body("celularInst").notEmpty().isString().isLength({ min: 7, max: 8 }).withMessage("Debe enviar un número de celular (381) + ......."),
     ],
+    verifyJWT,
     uniqueInstitution,
     expressValidations,
     createInstitution,

@@ -12,7 +12,6 @@ adminAuthRouter.post("/login",
     body("mail").notEmpty().isString().isEmail().withMessage("Debe enviar un mail."), 
     body("contrasenia").notEmpty().isLength({ min: 8 }).withMessage("Debe enviar una contraseña válida."),
   ],
-  expressValidations,
   loginAdmin
 );
 

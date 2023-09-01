@@ -4,8 +4,6 @@ const {
   editarNota,
   eliminarNota, 
   promedioCursoAnio, 
-  promedioCursada,
-  encontrarNotas,
   encontrarTodasLasNotas,
  } = require("../controllers/notas.controller");
 const {
@@ -13,7 +11,8 @@ const {
   esAnioValido,
   expressValidations,
 } = require("../middlewares/common.validations");
-const { anioCoincidente } = require("../middlewares/notas.validations") 
+const { anioCoincidente } = require("../middlewares/notas.validations"); 
+const { verifyJWT } = require("../middlewares/adminAuth.validations");
 
 const notasRouter = express.Router();
 
@@ -41,6 +40,7 @@ notasRouter.post(
   esAnioValido,
   anioCoincidente,
   esNotaValida,
+  verifyJWT,
   expressValidations,
   editarNota,
 );
@@ -62,6 +62,7 @@ notasRouter.delete(
       .withMessage("Debe enviar un año válido."),
   ],
   esAnioValido,
+  verifyJWT,
   expressValidations,
   eliminarNota
 );
@@ -75,6 +76,7 @@ notasRouter.get(
     param("idAlumno").notEmpty().isMongoId().withMessage("Debe enviar un id de alumno válido."),
   ],
   esAnioValido,
+  verifyJWT,
   expressValidations,
   promedioCursoAnio
 );
@@ -83,6 +85,7 @@ notasRouter.get("/alumno/:idAlumno",
   [
     param("idAlumno").notEmpty().isMongoId().withMessage("Debe enviar un id de alumno válido."),
   ],
+  verifyJWT,
   expressValidations,
   encontrarTodasLasNotas
 )
