@@ -17,8 +17,6 @@ const { verifyJWT } = require("../middlewares/adminAuth.validations");
 
 const alumnoRouter = Router();
 
-/* --> Creación <-- */
-
 alumnoRouter.post(
   "/crear",
   [
@@ -46,7 +44,6 @@ alumnoRouter.post(
       .isNumeric()
       .isLength({ min: 1, max: 1 })
       .withMessage("Debe enviar el año de cursado."),
-    // Faltaria un custom para verificar si el mail es único (lo hace el models pero se puede hacer aquí con .custom)
   ],
   verifyJWT,
   dniExistValidation,
@@ -54,9 +51,6 @@ alumnoRouter.post(
   createAlumno
 );
 
-/* --> Borrado <-- */
-
-// Operación de Borrado  por ID
 alumnoRouter.delete(
   "/delete-by-id/:id",
   [param("id").isMongoId().withMessage("Debe mandar un ID valido")],
@@ -65,12 +59,8 @@ alumnoRouter.delete(
   deleteAlumno
 );
 
-/* --> Busqueda <-- */
-
-// Operación de Busqueda Total
 alumnoRouter.get("/findall", verifyJWT, expressValidations, findAllAlumno);
 
-// Operación de Busqueda por ID
 alumnoRouter.get(
   "/find-by-id/:id",
   [param("id").isMongoId().withMessage("Debe mandar un ID valido")],
@@ -79,7 +69,6 @@ alumnoRouter.get(
   findAlumnoById
 );
 
-/* --> Actualización <-- */
 alumnoRouter.put(
   "/update-alDia-by-id/:id",
   [

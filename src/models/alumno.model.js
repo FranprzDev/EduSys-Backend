@@ -48,7 +48,7 @@ alumnoSchema.pre("save", async function (next) {
   }
 
   try {
-    const materias = await Materia.find(); // Obtener todas las materias
+    const materias = await Materia.find();
     const notasPromises = [];
 
     for (let anio = 1; anio <= this.anioCursado; anio++) {

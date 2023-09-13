@@ -24,7 +24,6 @@ const institutionSchema = mongoose.Schema({
         unique: true,
         validate: {
             validator: function(value) {
-              // Expresión regular para verificar el formato del correo electrónico
               const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
               return emailRegex.test(value);
             },

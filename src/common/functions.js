@@ -3,10 +3,6 @@ const Admin = require("../models/admin.model");
 const Materias = require("../models/materias.model");
 const { arrayMaterias } = require("./constants");
 
-// <-- Scripts para Cuando se Inicialice el Proyecto ---> 
-
-/* --> Creación del SuperAdministrador  <-- */ 
-
 function encriptarContrasenia(contrasenia) {
     const salt = bcrypt.genSaltSync(5);
     return hashedContra = bcrypt.hashSync(contrasenia, salt);
@@ -30,10 +26,6 @@ function crearSuperAdmin(){
     encriptarContrasenia("Adm1n@RC");
     generarSuperAdmin().save();
 }
-
-/* --> Fin de la Creación del SuperAdministrador <-- */ 
-
-/*  --> Script para crear las materias <--  */ 
 
 function generarMaterias() {
     arrayMaterias.map(async materia => {

@@ -67,8 +67,6 @@ notasRouter.delete(
   eliminarNota
 );
 
-
-// Obtengo el promedio por año
 notasRouter.get(
   "/calcular-promedio-anio/:anio/:idAlumno",
   [

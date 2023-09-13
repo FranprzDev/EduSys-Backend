@@ -1,11 +1,7 @@
-// Operaciones para el CRUD de Administradores (Only - Super Administrador)
 const { Router } = require("express");
 const adminAuthRouter = Router();
-const { expressValidations } = require("../middlewares/common.validations");
 const { body } = require("express-validator");
 const { loginAdmin } = require("../controllers/adminAuth.controllers");
-
-/* --> Operación de Login <-- */
 
 adminAuthRouter.post("/login",
   [

@@ -70,17 +70,11 @@ const promedioCursoAnio = async (req, res) => {
 
   try {
     const notas = await Notas.find({ alumno: idAlumno, anio: anio });
-    // Esto es un array con las notas que encontró
 
     if(notas.length === 0) {
       return res.status(404).json({ message: "No hay notas para el año indicado" });
     }
 
-    // Calculo el promedio mediante reduce y lo devuelvo en el response,
-    // reduce es una función de los arrays que permite hacer operaciones
-    // con cada elemento del array y devolver un valor único, en este caso
-    // el promedio de las notas.
-    // La mostró José en el taller de JS de enero.
     const promedio = notas.reduce((acc, nota) => {
       return acc + nota.nota;
     }, 0) / notas.length;

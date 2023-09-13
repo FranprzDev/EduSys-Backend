@@ -2,13 +2,9 @@ const Alumno = require("../models/alumno.model");
 const Materias = require("../models/materias.model");
 const Notas = require("../models/notas.model");
 
-/* -> Creación en DB Alumno <- */
-
 const createAlumno = async (req, res) => {
-  // Realizo la destructuración de la req
   const { nombre, apellido, dni, alDia, anioCursado } = req.body;
 
-  // Genero mediante el modelo el Administrador
   const alumno = new Alumno({
     nombre: nombre,
     apellido: apellido,
@@ -17,15 +13,12 @@ const createAlumno = async (req, res) => {
     anioCursado: anioCursado,
   });
 
-  // Espero que se guarde
   await alumno.save();
 
-  // Genero el código HTTP & Un mensaje de respueta
   res.status(201);
   res.json({ message: `Se creo el Alumno ${nombre} ${apellido}` });
 };
 
-/* -> Borrado en DB Alumno */
 
 const deleteAlumno = async (req, res) => {
   const alumno = await Alumno.findById(req.params.id);
@@ -40,8 +33,6 @@ const deleteAlumno = async (req, res) => {
   const filters = { idAlumno };
   await alumno.deleteOne(filters);
 
-  // Como elimino el alumno, necesariamente DEBO eliminar todas las notas asociadas a él.
-
   const notas = await Notas.find({ alumno: idAlumno });
 
   if (notas.length > 0) {
@@ -54,7 +45,6 @@ const deleteAlumno = async (req, res) => {
   res.json({ message: "Se elimino el alumno de la DB." });
 };
 
-/* -> Busqueda en DB Alumno <- */
 const findAllAlumno = async (req, res) => {
   const alumno = await Alumno.find();
   
@@ -117,7 +107,7 @@ const actualizarAnioCursado = async (req, res) => {
     anioCursado: nuevoAnioCursado
   })
 
-  const materias = await Materias.find(); // Obtener todas las materias
+  const materias = await Materias.find(); 
 
   const notasPromises = [];
   materias.forEach(async (materia) => {
@@ -133,7 +123,6 @@ const actualizarAnioCursado = async (req, res) => {
     notasPromises.push(nota);
   });
   
-  // Esperar a que se completen todas las promesas de guardado de notas
   await Promise.all(notasPromises);
 
   res.status(200)

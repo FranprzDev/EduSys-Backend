@@ -6,13 +6,10 @@ const verifyJWT = (req, res, next) => {
 
     const token = req.headers.authorization.split(" ")[1]
 
-    // Verificacion
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
         if (err) {
             return res.status(403).json({ message: 'Token inválido.' });
         }
-
-        // El token es válido, guardamos los datos del usuario en el objeto 'req'
         next()
     });
 }

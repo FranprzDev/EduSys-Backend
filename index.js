@@ -15,13 +15,11 @@ const morgan = require("morgan")
 const Materias = require('./src/models/materias.model')
 
 
-// Inicializaciones
 const app = express()
 app.use(cors())
 
 const port = 8000
 
-// Indico a mi aplicacion que podria recibir un json del usuario
 app.use(express.json({ limit: "50mb" }))
 
 if(process.env.NODE_ENV === "development") {
@@ -35,11 +33,8 @@ app.use("/inst", institutionRouter)
 app.use("/alumno", alumnoRouter)
 app.use("/notas", notasRouter)
 
-// Conexión a la DB (Uso de dotenv para proteger datos SENSIBLES)
 
 mongoose.connect(process.env.MONGO_URI).then(() => {
-    
-    // Scripts Iniciales del Proyecto
     Admin.findOne().then(admins => {
         if (admins === null) { crearSuperAdmin() }
     })

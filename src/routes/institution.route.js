@@ -7,8 +7,6 @@ const { createInstitution, getInstitution } = require("../controllers/institutio
 
 const instRouter = Router();
 
-/* --> Creación <-- */
-
 instRouter.post(
     "/create-inst",
     [
